@@ -1,0 +1,5 @@
+﻿  EntryPoint.cpp
+  GameWindow.cpp
+C:\Users\Dev\Engine\A.M.E.L.I.A\src\Graphics\GameWindow.cpp(14,9): warning C4551: function call missing argument list
+  Generating Code...
+  A.M.E.L.I.A.vcxproj -> C:\Users\Dev\Engine\A.M.E.L.I.A\Debug\Output\A.M.E.L.I.A.exe
