@@ -155,11 +155,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Loaders\Shader.cpp" />
     <ClCompile Include="src\Graphics\GameWindow.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Loaders\Shader.h" />
     <ClInclude Include="src\Graphics\GameWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\GLSL\basic.frag" />
+    <None Include="src\GLSL\basic.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
