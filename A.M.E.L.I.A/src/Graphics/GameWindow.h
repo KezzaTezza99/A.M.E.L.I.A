@@ -17,6 +17,7 @@ private:
 	int m_width, m_height;																																//The width and height of the game window
 	GLFWwindow* m_window;																																//Pointer to the window
 	bool m_closed;																																		//Flag to close the window
+	Camera& m_camera;																																	//Reference to the camera to allow for movement inside the window
 
 	//User input
 	bool m_keys[MAX_KEYS];																																//Keys that have been pressed
@@ -25,7 +26,7 @@ private:
 
 public:
 	//Methods for the window
-	GameWindow(const char* _title, int _width, int _height);																							//Creates a GLFW Window will the paramaters passed into the constructor
+	GameWindow(const char* _title, int _width, int _height, Camera& _camera);																			//Creates a GLFW Window 
 	~GameWindow();																																		//Destroys the GLFW window
 	bool Closed() const;																																//Close the window
 	void Update();																																		//Update the window (poll events and swap buffers)
@@ -40,6 +41,7 @@ public:
 	//Useful getter methods
 	inline int GetWidth() const { return m_width; }																										//Get the windows width
 	inline int GetHeight() const { return m_height; }																									//Get the windows height
+	inline Camera& GetCamera() const { return m_camera; }
 
 private:
 	bool InitialisedGLFW();																																//Initialise GLFW

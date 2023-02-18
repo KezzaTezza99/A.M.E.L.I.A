@@ -17,11 +17,11 @@ Camera camera(WIDTH, HEIGHT);
 int main()
 {
 	//Creating a window
-	GameWindow window("A.M.E.L.I.A", WIDTH, HEIGHT);
+	GameWindow window("A.M.E.L.I.A", WIDTH, HEIGHT, camera);
 
 	//Shaders
 	Shader shader;
-	shader.LoadShaders("src/GLSL/basic.vert", "src/GLSL/basic.frag");
+	shader.LoadShaders("src/GLSL/vertex.vert", "src/GLSL/fragment.frag");
 
 	//Quad
 	float vertices[] =
@@ -46,19 +46,40 @@ int main()
 
 	//TODO: Check if the image format is RGB or RGBA
 	Image woodTexture("./Assets/Textures/wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	woodTexture.TextureUnit(shader, "tex0", 0);
+	woodTexture.TextureUnit(shader, "texture_diffuse1", 0);
 
+	//Position
 	vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
-	vao.LinkAttributes(vbo, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	//UVs
+	vao.LinkAttributes(vbo, 2, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
-	// TODO: CAMERA STUFF
-	
-
+	//VIEW MATRIX ETC
 	//Game Loop
 	while (!window.Closed())
 	{
 		window.Clear();
 		window.SetBackgroundColour(glm::vec3(1.0f, 1.0f, 1.0f));
+
+		// --- PERFORMANCE ---
+		
+		//Matrices
+		glm::mat4 modelMatrix = glm::mat4(1.0f);
+		glm::mat4 viewMatrix = glm::mat4(1.0f);
+		glm::mat4 projectionMatrix = glm::mat4(1.0f);
+
+		modelMatrix = glm::rotate(modelMatrix, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+		viewMatrix = glm::lookAt(camera.GetCameraPosition(), camera.GetCameraPosition() + camera.GetCameraFront(), camera.GetCameraUp());
+		projectionMatrix = glm::perspective(glm::radians(45.0f), (float)(WIDTH / HEIGHT), 0.1f, 100.0f);
+
+		//Getting the location of the matrices in the Vertex Shader
+		unsigned int model = glGetUniformLocation(shader.GetShaderID(), "model");
+		unsigned int view = glGetUniformLocation(shader.GetShaderID(), "view");
+		unsigned int projection = glGetUniformLocation(shader.GetShaderID(), "projection");
+
+		//Passing the matrices to the Vertex Shader as we have the location
+		glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		glUniformMatrix4fv(view, 1, GL_FALSE, &viewMatrix[0][0]);
+		glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 
 		// --- RENDER ---
 		//Activating the shader

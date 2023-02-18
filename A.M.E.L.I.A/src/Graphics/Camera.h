@@ -18,6 +18,6 @@ public:
 
 	inline glm::vec3 GetCameraPosition() const { return m_position; }
 	inline glm::vec3 GetCameraFront() const { return m_front; }
-	inline glm::vec3 GetCamerUp() const { return m_up; }
+	inline glm::vec3 GetCameraUp() const { return m_up; }
 };
 #endif // !__CAMERA__

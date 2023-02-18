@@ -1,9 +1,10 @@
 #include "Camera.h"
+#include <iostream>
 
 Camera::Camera(const float& _WIDTH, const float& _HEIGHT)
 {
 	//Setting some default camera paramaters
-	m_position = glm::vec3(0.0f, 1.0f, 10.0f);
+	m_position = glm::vec3(0.0f, 0.0f, 3.0f);
 	m_front = glm::vec3(0.0f, 0.0f, 0.0f);
 	m_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -32,25 +33,25 @@ void Camera::RotateCamera(double& _xPos, double& _yPos)
 	}
 
 	float xOffset = _xPos - m_lastX;
-	float yOffset = _yPos - m_lastY;
+	float yOffset = m_lastY - _yPos;
 
 	m_lastX = _xPos;
 	m_lastY = _yPos;
 
-	const float SENSITIVITY = 0.1f;
-	xOffset *= SENSITIVITY;
-	yOffset *= SENSITIVITY;
+	const float sensitivity = 0.1f;
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
 
-	m_yaw += SENSITIVITY;
-	m_pitch += SENSITIVITY;
+	m_yaw += xOffset;
+	m_pitch += yOffset;
 
-	//Capping the users ability to look up and down to an extend
+	//Restricting users ability to look up and down -89 > 89
 	if (m_pitch > 89.0f)
 		m_pitch = 89.0f;
 	if (m_pitch < -89.0f)
 		m_pitch = -89.0f;
 
-	//Working out Euler Angle
+	//Euler Angles
 	glm::vec3 direction;
 	direction.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 	direction.y = sin(glm::radians(m_pitch));

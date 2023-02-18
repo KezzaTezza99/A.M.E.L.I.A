@@ -7,11 +7,11 @@ void key_callback(GLFWwindow* _window, int _key, int _scancode, int _action, int
 void mouse_button_callback(GLFWwindow* _window, int _button, int _action, int _mods);
 void cursor_position_callback(GLFWwindow* _window, double _xpos, double _ypos);
 
-
-void ProcessMouse(GLFWwindow* _window, Camera* _camera, double _xPos, double _yPos);
+//TESTING MOUSE
+void ProcessMouse(GLFWwindow* _window, double _xPos, double _yPos);
 
 GameWindow::GameWindow(const char* _title, int _width, int _height, Camera& _camera)
-    : m_title(_title), m_width(_width), m_height(_height)
+    : m_title(_title), m_width(_width), m_height(_height), m_camera(_camera)
 {
     if (!InitialisedGLFW())
         glfwTerminate;
@@ -109,6 +109,8 @@ bool GameWindow::InitialisedGLFW()
     glfwSetMouseButtonCallback(m_window, mouse_button_callback);
     //Allows for mouse cursor callbacks
     glfwSetCursorPosCallback(m_window, cursor_position_callback);
+    //Allows for mouse movement callbacks (camera movement etc)
+    glfwSetCursorPosCallback(m_window, ProcessMouse);
 
     //Disabling VSYNC
     glfwSwapInterval(0);
@@ -151,8 +153,9 @@ void cursor_position_callback(GLFWwindow* _window, double _xpos, double _ypos)
     gameWindow->m_y = _ypos;
 }
 
-//CAM
-void ProcessMouse(GLFWwindow* _window, Camera* _camera, double _xPos, double _yPos)
+//CAMERA STUFF TESTING
+void ProcessMouse(GLFWwindow* _window, double _xPos, double _yPos)
 {
-    _camera->RotateCamera(_xPos, _yPos);
+    GameWindow* gameWindow = (GameWindow*)glfwGetWindowUserPointer(_window);
+    gameWindow->GetCamera().RotateCamera(_xPos, _yPos);
 }
