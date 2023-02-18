@@ -1,10 +1,18 @@
 #include <iostream>
 #include <glm.hpp>
 #include "src/Graphics/GameWindow.h"
+#include "src/Graphics/Camera.h"
 #include "src/Loaders/Shader.h"
+#include "src/Loaders/Image.h"
+#include "src/Buffers/VertexBuffer.h"
+#include "src/Buffers/VertexArray.h"
+#include "src/Buffers/IndexBuffer.h"
 
 const int WIDTH = 800;
 const int HEIGHT = 800;
+
+//TEMP 
+Camera camera(WIDTH, HEIGHT);
 
 int main()
 {
@@ -18,10 +26,11 @@ int main()
 	//Quad
 	float vertices[] =
 	{
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left 
+		//Coords				//UVs
+		 0.5f,  0.5f, 0.0f,		1.0f, 1.0f,		// top right
+		 0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		// bottom right
+		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		// bottom left
+		-0.5f,  0.5f, 0.0f,		0.0f, 1.0f		// top left 
 	};
 
 	GLuint indices[] =
@@ -30,28 +39,20 @@ int main()
 		1, 2, 3				// second triangle
 	};
 
-	//VBO, VAO and IBO
-	unsigned int VBO, VAO, IBO;
-	//Generating the VAO / VBO / IBO
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &IBO);
+	//TODO: Change how VAO links attributes
+	VertexArray vao;
+	VertexBuffer vbo(vertices, sizeof(vertices), 3);
+	IndexBuffer ibo(indices, sizeof(indices));
 
-	//Binding
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+	//TODO: Check if the image format is RGB or RGBA
+	Image woodTexture("./Assets/Textures/wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	woodTexture.TextureUnit(shader, "tex0", 0);
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	vao.LinkAttributes(vbo, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
+	vao.LinkAttributes(vbo, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
-	//Linking vertex atrributes
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	//Unbinding
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	// TODO: CAMERA STUFF
+	
 
 	//Game Loop
 	while (!window.Closed())
@@ -59,13 +60,21 @@ int main()
 		window.Clear();
 		window.SetBackgroundColour(glm::vec3(1.0f, 1.0f, 1.0f));
 
-		//Render here
+		// --- RENDER ---
+		//Activating the shader
 		shader.UseShader();
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		//Update
+		//Binding the VAO, IBO and then drawing the elements
+		woodTexture.Bind();
+		vao.Bind();
+		ibo.Bind();
+		glDrawElements(GL_TRIANGLES, ibo.GetComponentCount(), GL_UNSIGNED_INT, 0);
+		
+		//Unbinding the buffers
+		ibo.Unbind();
+		vao.Unbind();
+
+		//Updating the window
 		window.Update();
 	}
 

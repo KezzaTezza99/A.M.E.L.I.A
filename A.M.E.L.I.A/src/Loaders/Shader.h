@@ -20,5 +20,7 @@ public:
 	void LoadShaders(const char* _vertexSrc, const char* _fragmentSrc);
 	void UseShader();
 	void DeleteShader();
+
+	inline GLuint GetShaderID() { return m_shaderID; }
 };
 #endif // !__SHADER__

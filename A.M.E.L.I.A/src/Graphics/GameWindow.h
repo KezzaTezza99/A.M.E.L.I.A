@@ -1,8 +1,10 @@
 #ifndef __GAME_WINDOW__
 #define __GAME_WINDOW__
+#include <iostream>
 #include <glew.h>
 #include <glfw3.h>
 #include <glm.hpp>
+#include "Camera.h"
 
 #define MAX_KEYS 1024
 #define MAX_BUTTONS 32
@@ -46,5 +48,8 @@ private:
 	friend static void key_callback(GLFWwindow* _window, int _key, int _scancode, int _action, int _mods);												//Responsible for handling keyboard input
 	friend static void mouse_button_callback(GLFWwindow* _window, int _button, int _action, int _mods);													//Handle mouse clicks
 	friend static void cursor_position_callback(GLFWwindow* _window, double _xpos, double _ypos);														//Handle cursor input
+
+	//Camera stuff
+	friend static void ProcessMouse(GLFWwindow* _window, Camera* _camera, double _xPos, double _yPos);
 };
 #endif // !__GAME_WINDOW__

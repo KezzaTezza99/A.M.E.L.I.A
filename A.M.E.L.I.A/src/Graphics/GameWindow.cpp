@@ -7,7 +7,10 @@ void key_callback(GLFWwindow* _window, int _key, int _scancode, int _action, int
 void mouse_button_callback(GLFWwindow* _window, int _button, int _action, int _mods);
 void cursor_position_callback(GLFWwindow* _window, double _xpos, double _ypos);
 
-GameWindow::GameWindow(const char* _title, int _width, int _height)
+
+void ProcessMouse(GLFWwindow* _window, Camera* _camera, double _xPos, double _yPos);
+
+GameWindow::GameWindow(const char* _title, int _width, int _height, Camera& _camera)
     : m_title(_title), m_width(_width), m_height(_height)
 {
     if (!InitialisedGLFW())
@@ -130,8 +133,9 @@ void key_callback(GLFWwindow* _window, int _key, int _scancode, int _action, int
     GameWindow* gameWindow = (GameWindow*)glfwGetWindowUserPointer(_window);
     gameWindow->m_keys[_key] = _action != GLFW_RELEASE;
 
-    if (gameWindow->IsKeyPressed(_key))
+    if (_key == GLFW_KEY_ESCAPE)
         glfwSetWindowShouldClose(_window, true);
+    
 }
 
 void mouse_button_callback(GLFWwindow* _window, int _button, int _action, int _mods)
@@ -145,4 +149,10 @@ void cursor_position_callback(GLFWwindow* _window, double _xpos, double _ypos)
     GameWindow* gameWindow = (GameWindow*)glfwGetWindowUserPointer(_window);
     gameWindow->m_x = _xpos;
     gameWindow->m_y = _ypos;
+}
+
+//CAM
+void ProcessMouse(GLFWwindow* _window, Camera* _camera, double _xPos, double _yPos)
+{
+    _camera->RotateCamera(_xPos, _yPos);
 }
