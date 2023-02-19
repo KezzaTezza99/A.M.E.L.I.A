@@ -29,7 +29,7 @@ public:
 	GameWindow(const char* _title, int _width, int _height, Camera& _camera);																			//Creates a GLFW Window 
 	~GameWindow();																																		//Destroys the GLFW window
 	bool Closed() const;																																//Close the window
-	void Update();																																		//Update the window (poll events and swap buffers)
+	void Update(float _deltaTime);																														//Update the window (poll events and swap buffers)
 	void Clear() const;																																	//Clear the screen
 	void SetBackgroundColour(glm::vec3 _colour);																										//Set a background colour for the window
 
@@ -52,6 +52,7 @@ private:
 	friend static void cursor_position_callback(GLFWwindow* _window, double _xpos, double _ypos);														//Handle cursor input
 
 	//Camera stuff
-	friend static void ProcessMouse(GLFWwindow* _window, Camera* _camera, double _xPos, double _yPos);
+	friend static void ProcessMouse(GLFWwindow* _window, double _xPos, double _yPos);
+	friend static void ProcessKeyboard(GLFWwindow* _window, float _deltaTime);
 };
 #endif // !__GAME_WINDOW__

@@ -8,22 +8,35 @@
 #include "src/Buffers/VertexArray.h"
 #include "src/Buffers/IndexBuffer.h"
 
+//GOALS, TASKS AND GENERAL INFO
+#pragma region Info
+// Tasks: 2D Renderer (render basic 2D primitives)
+// Should the renderer be responsible for creating all the buffers and matrices?
+// Should the game window be responsible for creating and destroying the camera? 
+
+// Tasks: 2D Collision
+// Tasks: Load Models
+// Tasks: Go 3D
+//TODO: Decouple the game window from input?
+#pragma endregion
+//!
+
 const int WIDTH = 800;
 const int HEIGHT = 800;
 
-//TEMP 
-Camera camera(WIDTH, HEIGHT);
-
 int main()
 {
+	//Creating the camera first as it needs to be passed into the game window
+	Camera camera(WIDTH, HEIGHT);
+
 	//Creating a window
 	GameWindow window("A.M.E.L.I.A", WIDTH, HEIGHT, camera);
 
-	//Shaders
+	//Creating and loading the vertex / fragment shader
 	Shader shader;
 	shader.LoadShaders("src/GLSL/vertex.vert", "src/GLSL/fragment.frag");
 
-	//Quad
+	//Until model loading is implemented using a basic quad with a wood texture
 	float vertices[] =
 	{
 		//Coords				//UVs
@@ -39,7 +52,6 @@ int main()
 		1, 2, 3				// second triangle
 	};
 
-	//TODO: Change how VAO links attributes
 	VertexArray vao;
 	VertexBuffer vbo(vertices, sizeof(vertices), 3);
 	IndexBuffer ibo(indices, sizeof(indices));
@@ -53,7 +65,9 @@ int main()
 	//UVs
 	vao.LinkAttributes(vbo, 2, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
-	//VIEW MATRIX ETC
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
+
 	//Game Loop
 	while (!window.Closed())
 	{
@@ -61,7 +75,10 @@ int main()
 		window.SetBackgroundColour(glm::vec3(1.0f, 1.0f, 1.0f));
 
 		// --- PERFORMANCE ---
-		
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		//Matrices
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		glm::mat4 viewMatrix = glm::mat4(1.0f);
@@ -96,8 +113,7 @@ int main()
 		vao.Unbind();
 
 		//Updating the window
-		window.Update();
+		window.Update(deltaTime);
 	}
-
 	return 0;
 }

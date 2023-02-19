@@ -7,8 +7,9 @@ void key_callback(GLFWwindow* _window, int _key, int _scancode, int _action, int
 void mouse_button_callback(GLFWwindow* _window, int _button, int _action, int _mods);
 void cursor_position_callback(GLFWwindow* _window, double _xpos, double _ypos);
 
-//TESTING MOUSE
+//TESTING MOUSE AND KEYBOARD --- CLEAN UP
 void ProcessMouse(GLFWwindow* _window, double _xPos, double _yPos);
+void ProcessKeyboard(GLFWwindow* _window, float _deltaTime);
 
 GameWindow::GameWindow(const char* _title, int _width, int _height, Camera& _camera)
     : m_title(_title), m_width(_width), m_height(_height), m_camera(_camera)
@@ -31,11 +32,14 @@ bool GameWindow::Closed() const
     return glfwWindowShouldClose(m_window);
 }
 
-void GameWindow::Update()
+void GameWindow::Update(float _deltaTime)
 {
     //Update
     glfwPollEvents();
     glfwSwapBuffers(m_window);
+
+    //TEST
+    ProcessKeyboard(m_window, _deltaTime);
 }
 
 void GameWindow::Clear() const
@@ -98,13 +102,13 @@ bool GameWindow::InitialisedGLFW()
 
     //Creating the current window context
     glfwMakeContextCurrent(m_window);
-    glfwMakeContextCurrent(m_window);
     //Need a pointer to window for key handling
     glfwSetWindowUserPointer(m_window, this);
     //Allows for window resizing
     glfwSetWindowSizeCallback(m_window, window_resize);
     //Allows for keyboard call backs 
-    glfwSetKeyCallback(m_window, key_callback);
+    //glfwSetKeyCallback(m_window, key_callback);
+    //glfwSetKeyCallback(m_window, ProcessKeyboard);
     //Allows for mouse call backs 
     glfwSetMouseButtonCallback(m_window, mouse_button_callback);
     //Allows for mouse cursor callbacks
@@ -153,9 +157,31 @@ void cursor_position_callback(GLFWwindow* _window, double _xpos, double _ypos)
     gameWindow->m_y = _ypos;
 }
 
-//CAMERA STUFF TESTING
+//TESTING CAMERA AND MOVEMENT
 void ProcessMouse(GLFWwindow* _window, double _xPos, double _yPos)
 {
     GameWindow* gameWindow = (GameWindow*)glfwGetWindowUserPointer(_window);
     gameWindow->GetCamera().RotateCamera(_xPos, _yPos);
+}
+
+void ProcessKeyboard(GLFWwindow* _window, float _deltaTime)
+{
+    GameWindow* gameWindow = (GameWindow*)glfwGetWindowUserPointer(_window);
+    glm::vec3 currentPos = gameWindow->GetCamera().GetCameraPosition();
+
+    const float movementSpeed = 2.5f * _deltaTime;
+
+    //Forward
+    if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
+        currentPos += movementSpeed * gameWindow->GetCamera().GetCameraFront();
+    //Backward
+    if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
+        currentPos -= movementSpeed * gameWindow->GetCamera().GetCameraFront();
+    //Left
+    if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
+        currentPos -= glm::normalize(glm::cross(gameWindow->GetCamera().GetCameraFront(), gameWindow->GetCamera().GetCameraUp())) * movementSpeed;
+    //Right
+    if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
+        currentPos += glm::normalize(glm::cross(gameWindow->GetCamera().GetCameraFront(), gameWindow->GetCamera().GetCameraUp())) * movementSpeed;
+    gameWindow->GetCamera().MoveCamera(currentPos);
 }
