@@ -22,5 +22,6 @@ public:
 	void DeleteShader();
 
 	inline GLuint GetShaderID() { return m_shaderID; }
+	inline void SetMat4(const std::string& _uniformName, glm::mat4 _value) const { glUniformMatrix4fv(m_shaderID, 1, GL_FALSE, glm::value_ptr(_value)); }
 };
 #endif // !__SHADER__

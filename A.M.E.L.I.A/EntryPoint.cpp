@@ -2,6 +2,7 @@
 #include <glm.hpp>
 #include "src/Graphics/GameWindow.h"
 #include "src/Graphics/Camera.h"
+#include "src/Graphics/Renderer2D.h"
 #include "src/Loaders/Shader.h"
 #include "src/Loaders/Image.h"
 #include "src/Buffers/VertexBuffer.h"
@@ -17,6 +18,7 @@
 // Tasks: 2D Collision
 // Tasks: Load Models
 // Tasks: Go 3D
+// Tasks: Basic Lighting
 //TODO: Decouple the game window from input?
 #pragma endregion
 //!
@@ -33,9 +35,10 @@ int main()
 	GameWindow window("A.M.E.L.I.A", WIDTH, HEIGHT, camera);
 
 	//Creating and loading the vertex / fragment shader
-	Shader shader;
-	shader.LoadShaders("src/GLSL/vertex.vert", "src/GLSL/fragment.frag");
-
+	//Shader shader;
+	//shader.LoadShaders("src/GLSL/vertex.vert", "src/GLSL/fragment.frag");
+	
+#if 0
 	//Until model loading is implemented using a basic quad with a wood texture
 	float vertices[] =
 	{
@@ -116,4 +119,33 @@ int main()
 		window.Update(deltaTime);
 	}
 	return 0;
+#else
+	Renderer2D renderer;
+	//Image woodTexture("./Assets/Textures/wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	//woodTexture.TextureUnit(shader, "texture_diffuse1", 0);
+
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
+
+	//Game Loop
+	while (!window.Closed())
+	{
+		window.Clear();
+		window.SetBackgroundColour(glm::vec3(1.0f, 1.0f, 1.0f));
+
+		// --- PERFORMANCE ---
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
+		// --- RENDER ---
+		//Activating the shader
+		//shader.UseShader();
+		renderer.DrawSprite();
+
+		//Updating the window
+		window.Update(deltaTime);
+	}
+	return 0;
+#endif
 }
