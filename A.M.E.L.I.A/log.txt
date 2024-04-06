@@ -1,0 +1,14 @@
+-------------
+TODO
+-------------
+- Texture could do with a defualt constructor that assigns all the texture params and I can just provide a filePath
+
+-------------
+WIP
+-------------
+
+
+-------------
+NOTES
+-------------
+- Loading basic shaders the sprite will render but not with a texture, problem loading the texture file??
