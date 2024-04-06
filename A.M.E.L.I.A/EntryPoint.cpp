@@ -4,10 +4,12 @@
 #include "src/Graphics/Camera.h"
 #include "src/Graphics/Renderer2D.h"
 #include "src/Loaders/Shader.h"
-#include "src/Loaders/Image.h"
+#include "src/Loaders/Texture.h"
 #include "src/Buffers/VertexBuffer.h"
 #include "src/Buffers/VertexArray.h"
 #include "src/Buffers/IndexBuffer.h"
+#include "src/Game/GameObject.h"
+#include "src/Game/Sprite.h"
 
 //GOALS, TASKS AND GENERAL INFO
 #pragma region Info
@@ -35,10 +37,10 @@ int main()
 	GameWindow window("A.M.E.L.I.A", WIDTH, HEIGHT, camera);
 
 	//Creating and loading the vertex / fragment shader
-	//Shader shader;
-	//shader.LoadShaders("src/GLSL/vertex.vert", "src/GLSL/fragment.frag");
+	Shader shader;
+	shader.LoadShaders("src/GLSL/vertex.vert", "src/GLSL/fragment.frag");
 	
-#if 0
+#if 1
 	//Until model loading is implemented using a basic quad with a wood texture
 	float vertices[] =
 	{
@@ -60,7 +62,7 @@ int main()
 	IndexBuffer ibo(indices, sizeof(indices));
 
 	//TODO: Check if the image format is RGB or RGBA
-	Image woodTexture("./Assets/Textures/wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture woodTexture("./Assets/Textures/wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
 	woodTexture.TextureUnit(shader, "texture_diffuse1", 0);
 
 	//Position
@@ -121,8 +123,7 @@ int main()
 	return 0;
 #else
 	Renderer2D renderer;
-	//Image woodTexture("./Assets/Textures/wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
-	//woodTexture.TextureUnit(shader, "texture_diffuse1", 0);
+	Sprite sprite("./Assets/Textures/wood.png");
 
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
@@ -141,7 +142,9 @@ int main()
 		// --- RENDER ---
 		//Activating the shader
 		//shader.UseShader();
-		renderer.DrawSprite();
+		//renderer.DrawSprite();
+		//renderer.Draw(&woodTexture, pos, size, rot);
+		sprite.Draw();
 
 		//Updating the window
 		window.Update(deltaTime);

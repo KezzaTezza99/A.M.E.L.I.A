@@ -9,7 +9,7 @@ Renderer2D::Renderer2D()
 
     m_shader.LoadShaders("src/GLSL/vertex.vert", "src/GLSL/fragment.frag");
 
-    //Image m_texture("./Assets/Textures/wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+    //Texture m_texture("./Assets/Textures/wood.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
     //m_texture.TextureUnit(m_shader, "texture_diffuse1", 0);
 
     //Configuring a quad 
@@ -39,6 +39,16 @@ Renderer2D::Renderer2D()
 
 void Renderer2D::DrawSprite()
 {
+    m_vao->Bind();
+    m_ibo->Bind();
+    glDrawElements(GL_TRIANGLES, m_ibo->GetComponentCount(), GL_UNSIGNED_INT, 0);
+    m_vao->Unbind();
+    m_ibo->Unbind();
+}
+
+void Renderer2D::DrawSprite(Texture* _texture, glm::vec2& _position, glm::vec2& _size, float& _rotation)
+{
+    _texture->Bind();
     m_vao->Bind();
     m_ibo->Bind();
     glDrawElements(GL_TRIANGLES, m_ibo->GetComponentCount(), GL_UNSIGNED_INT, 0);
